@@ -42,10 +42,19 @@ const {
 // Pista: utilizar typeof para determinar si el valor de una propiedad es un objeto para aplicar
 // allí la recursión
 
-var objContains = function(obj, prop, value){
- 
-}
+var objContains = function(obj, prop, value) {
 
+  if (obj.hasOwnProperty(prop) && obj[prop] === value) {
+      return true;
+      }
+  for (propiedad in obj) {
+
+    if ( typeof  obj[propiedad] === 'object') {
+      return objContains ( obj[propiedad], prop, value ) 
+    }
+  };
+  return false;
+}
 
 // EJERCICIO 2
 // Implementar la función countArray: a partir de un array en el cual cada posición puede ser un único
@@ -58,8 +67,20 @@ var objContains = function(obj, prop, value){
 // [Para más información del método: https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Array/isArray]
 
 var countArray = function(array){
+
+  if ( array.length === 0) {
+    return 0;
+  }
   
-}
+  for ( var i = 0 ; i < array.length ; i++) {
+    if (Array.isArray(array[i])) {
+      countArray ( array[i]);
+    }
+    else count = count + array[i];
+  }
+  return count;
+  }
+  var count = 0;
 
 // ---------------------
 
@@ -78,9 +99,20 @@ var countArray = function(array){
 //    lista.size(); --> 3
 
 LinkedList.prototype.size = function(){
- 
-}
 
+  if ( this.head === null ) {
+    return 0;
+  }
+  else {
+    var size = 1;
+    var current = this.head;
+    while(current.next !== null){
+      current = current.next;
+      size = size + 1;
+  }
+  return size;
+}
+}
 
 // EJERCICIO 4
 // Implementar el método addInPos dentro del prototype de LinkedList que deberá agregar un elemento en
@@ -99,8 +131,19 @@ LinkedList.prototype.size = function(){
 //    sin antes tener cargada la posición 0 y 1.
 
 LinkedList.prototype.addInPos = function(pos, value){
-  
+
+  if (this.size < pos || this.head === null) {
+    return false;
+  }
+  var counter = 0;
+  var current = this.head;
+  while ( current !== pos) {
+     current = current.next;
+  }
+  current.next = node;
 }
+ 
+
 
 // EJERCICIO 5
 // Implementar el método reverse dentro del prototype de LinkedList que invierta el orden de la lista
@@ -110,8 +153,21 @@ LinkedList.prototype.addInPos = function(pos, value){
 //    Lista nueva luego de aplicar el reverse: Head --> 13 --> 10 --> 4 --> 1 --> null
 
 LinkedList.prototype.reverse = function(){
- 
+
+  let node = this.head;
+  var previous;
+  var aux;
+
+  while (node) {
+    aux = node.next;
+    node.next = previous;
+    previous = node;
+    node = aux;
+  }
+
+  return previous;
 }
+ 
 
 
 // ----------------------
@@ -141,11 +197,30 @@ LinkedList.prototype.reverse = function(){
 //    - mazoUserB = [6,9,10,3,6,4]
 
 var cardGame = function(mazoUserA, mazoUserB){
-
+  
+  while ( mazoUserA.size() !== 0 && mazoUserB.size() !== 0 ) {
+    
+    var AuxA = mazoUserA.dequeue();
+    var AuxB = mazoUserB.dequeue();
+    if ( AuxA > AuxB ) {
+      mazoUserA.enqueue (AuxA) ;
+      mazoUserA.enqueue (AuxB) ;
+    }
+    else if ( AuxA < AuxB ) {
+      mazoUserB.enqueue (AuxB) ;
+      mazoUserB.enqueue (AuxA) ;
+    }
+}
+if ( mazoUserA.size() !== 0 ) {
+  return "A wins!" ;
+}
+else if ( mazoUserB.size() !== 0 ) {
+  return "B wins!" ;
+}
+else return "Game tie!"
 }
 
 // ---------------
-
 
 // ----- BST -----
 
@@ -164,6 +239,7 @@ var cardGame = function(mazoUserA, mazoUserB){
 //       5
 
 var generateBST = function(array){
+  
  
 }
 
@@ -186,7 +262,24 @@ var generateBST = function(array){
 
 var binarySearch = function (array, target) {
 
-  
+
+  var Max = array.length - 1;
+  var Min = 0;
+  var pivot = 0;
+
+  while (Min <= Max) {
+    pivot = Math.floor((Max + Min) / 2);
+
+    if ( array[pivot] === target ) {
+      return pivot ;
+    } else if ( target > array[pivot]) {
+      Min = pivot + 1;
+    } else {
+      Max = pivot - 1;
+    }
+  }
+  return -1;
+
 }
 
 // EJERCICIO 9
@@ -199,6 +292,23 @@ var binarySearch = function (array, target) {
 
 
 var selectionSort = function(array) {
+
+  for ( var i = 0 ; i < array.length ; i++ ) {
+
+    var min = i;
+  
+    for ( var j = i+1 ; j < array.length ; j++ ) {
+      if ( array[j] < array[min]) {
+        min = j;  
+      }
+    }
+    if (min !== i) {
+      var aux = array[i]; 
+      array[i] = array[min]; 
+      array[min] = aux; 
+    }
+  }
+  return array;
   
 }
 
@@ -217,7 +327,9 @@ var selectionSort = function(array) {
 //    sumaDiez(11); --> Devolverá 21 (Ya que 11 + 10 = 21)
 
 function closureSum(numFijo) {
- 
+  return function(arg) {
+    return (numFijo + arg)
+  }
 }
 
 // -------------------
